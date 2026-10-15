@@ -1,7 +1,92 @@
-const OFFICIAL_ANSWERS_URL = "https://githubusercontent.com";
-const OFFICIAL_GUESSES_URL = "https://githubusercontent.com";
-let targetPool = [];
-let dictionaryWords = [];
+const targetPool = [
+    "crane", "apple", "beach", "dance", "eagle", "react", "world", "heavy", "plant", "music", 
+    "glove", "flame", "tower", "train", "pecan", "leaky", "peaky", "about", "above", "acute", 
+    "adult", "agent", "agony", "agree", "ahead", "alarm", "album", "alert", "alike", "alive", 
+    "allow", "alone", "along", "alter", "among", "anger", "angle", "angry", "apart", "apron", 
+    "argue", "arise", "arrow", "aside", "asset", "audio", "audit", "awake", "award", "aware", 
+    "awful", "bacon", "badge", "baker", "banjo", "barge", "barrel", "basin", "basket", "baste", 
+    "batch", "baton", "beard", "beast", "beech", "begin", "being", "belly", "below", "bench", 
+    "berry", "berth", "beset", "bible", "bicep", "bingo", "biome", "bison", "bitter", "black", 
+    "blade", "blame", "bland", "blank", "blast", "blaze", "bleach", "bleak", "bleed", "blend", 
+    "blind", "blink", "bliss", "blitz", "bloat", "block", "blood", "bloom", "blown", "bluff", 
+    "blunt", "blur", "blush", "board", "boast", "bonus", "boost", "booth", "booty", "bough", 
+    "bound", "bowel", "boxer", "brace", "braid", "brain", "brake", "brand", "brash", "brass", 
+    "brave", "bravo", "brawl", "brawn", "bread", "break", "breed", "bribe", "brick", "bride", 
+    "brief", "brine", "bring", "brink", "brisk", "broad", "broil", "broke", "brood", "brook", 
+    "broom", "broth", "brown", "brush", "brute", "cabin", "cable", "cache", "camel", "cameo", 
+    "canal", "candy", "canny", "canoe", "canon", "carat", "cargo", "carol", "carve", "caste", 
+    "catch", "cater", "cause", "cease", "cedar", "cello", "chafe", "chain", "chair", "chalk", 
+    "champ", "chant", "chaos", "charm", "chart", "chase", "chasm", "cheap", "cheat", "check", 
+    "cheek", "cheer", "chef", "chess", "chest", "chick", "chide", "chief", "child", "chili", 
+    "chill", "chime", "china", "chirp", "chive", "choir", "choke", "chord", "chore", "chose", 
+    "chuck", "chunk", "churn", "chute", "cider", "cigar", "cinch", "circa", "civic", "civil", 
+    "claim", "clamp", "clank", "clash", "clasp", "class", "clean", "clear", "cleft", "clerk", 
+    "click", "cliff", "climb", "cling", "clink", "cloak", "clock", "clone", "close", "cloth", 
+    "cloud", "clout", "clove", "clown", "cluck", "clump", "clung", "coach", "coast", "cobra", 
+    "cocoa", "colon", "colt", "combo", "comet", "comic", "comma", "conch", "condo", "coral", 
+    "couch", "cough", "could", "count", "coupe", "court", "crack", "craft", "cramp", "crank", 
+    "crash", "crass", "crate", "crave", "crawl", "craze", "crazy", "creak", "cream", "creed", 
+    "creek", "creep", "crepe", "crest", "crime", "crimp", "crisp", "croak", "crock", "crone", 
+    "crony", "crook", "cross", "crowd", "crown", "crude", "cruel", "cruise", "crumb", "crush", 
+    "crust", "crypt", "cubit", "cuff", "cult", "cumin", "cupid", "curio", "curly", "curry", 
+    "curse", "curve", "cycle", "cynic", "daddy", "daily", "dairy", "daisy", "dally", "dandy", 
+    "datum", "daunt", "dealt", "death", "debit", "debug", "debut", "decal", "decay", "decor", 
+    "decoy", "decry", "defer", "deity", "delay", "delta", "delve", "demon", "demur", "denim", 
+    "dense", "depot", "depth", "derby", "desk", "deter", "detox", "deuce", "devil", "diary", 
+    "diode", "dirge", "dirty", "disco", "ditch", "ditto", "ditty", "diver", "divan", "divot", 
+    "dizzy", "dodge", "dodgy", "dogma", "doing", "dolly", "donor", "donut", "dopey", "doubt", 
+    "dough", "douse", "dove", "dowdy", "dowel", "downy", "dowry", "dozen", "draft", "drain", 
+    "drake", "drama", "drank", "drape", "drawl", "drawn", "dread", "dream", "dress", "drift", 
+    "drill", "drink", "drive", "droll", "drone", "drool", "droop", "drove", "drown", "drug", 
+    "drum", "drunk", "dryer", "early", "earth", "easel", "east", "eaten", "eater", "ebony", 
+    "eddy", "edict", "eerie", "egret", "eight", "eject", "elate", "elbow", "elder", "elect", 
+    "elegy", "elite", "elope", "elude", "email", "embed", "ember", "empty", "enact", "endow", 
+    "enemy", "enjoy", "enter", "entry", "envoy", "epoch", "epoxy", "equal", "equip", "erase", 
+    "erect", "erode", "error", "erupt", "essay", "ester", "ether", "ethic", "ethos", "evade", 
+    "event", "every", "evict", "evoke", "exact", "exalt", "exam", "excel", "exert", "exile", 
+    "exist", "exit", "exotic", "expel", "extra", "exude", "exult", "fable", "facet", "faint", 
+    "fairy", "faith", "fake", "faker", "false", "fame", "fancy", "farce", "farm", "fast", 
+    "fatal", "fate", "fatty", "fault", "fauna", "favor", "fawn", "feast", "feat", "fecal", 
+    "feces", "feeble", "feed", "feel", "feign", "feint", "feline", "felon", "felt", "fence", 
+    "fend", "fender", "ferry", "fetal", "fetch", "fetus", "feud", "fever", "fewer", "fiat", 
+    "fiber", "fibre", "field", "fiend", "fiery", "fifth", "fifty", "fight", "filch", "file", 
+    "filer", "filet", "fill", "filler", "fillet", "filly", "film", "filmy", "filth", "final", 
+    "finch", "find", "finder", "fine", "finer", "finny", "fiord", "firm", "first", "firth", 
+    "fish", "fisher", "fishy", "fist", "fitly", "fiver", "fixer", "fizzy", "fjord", "flack", 
+    "flag", "flail", "flair", "flake", "flaky", "flame", "flank", "flare", "flash", "flask", 
+    "flat", "flaw", "flax", "flay", "flea", "fleck", "flee", "fleece", "fleecy", "fleet", 
+    "flesh", "fleshy", "flick", "flier", "fling", "flint", "flinty", "flip", "flirt", "flit", 
+    "float", "flock", "flog", "flood", "floor", "flop", "flora", "floss", "flour", "flout", 
+    "flow", "flown", "flue", "fluent", "fluff", "fluffy", "fluid", "fluke", "flume", "flung", 
+    "flunk", "flush", "flute", "flyer", "foam", "foamy", "focal", "focus", "foggy", "foil", 
+    "foist", "fold", "folder", "folio", "folk", "folks", "folly", "fond", "fondu", "font", 
+    "food", "fool", "foot", "foray", "force", "ford", "forest", "forge", "forgo", "fork", 
+    "form", "fort", "forte", "forth", "forty", "forum", "foul", "found", "fount", "four", 
+    "fowl", "foyer", "frail", "frame", "frank", "fraud", "fray", "freak", "free", "freed", 
+    "freer", "freeze", "fresh", "fret", "friar", "fridge", "fried", "frill", "frilly", 
+    "fringe", "frisk", "frisky", "frock", "frog", "frond", "front", "frost", "frosty", 
+    "froth", "frothy", "frown", "froze", "frozen"
+];
+const offlineDefinitions = {
+    "crane": "A tall, long-necked wading bird, or a machine for lifting heavy weights.",
+    "apple": "A round fruit with red, green, or yellow skin and crisp white flesh.",
+    "beach": "A pebbly or sandy shore, especially by the ocean or a lake.",
+    "dance": "Move rhythmically to music, typically following a set sequence of steps.",
+    "eagle": "A large bird of prey with a massive hooked bill and long broad wings.",
+    "react": "Act in response to something; respond in a particular way.",
+    "world": "The earth, together with all of its countries and peoples.",
+    "heavy": "Of great weight; difficult to lift or move.",
+    "plant": "A living organism of the kind exemplified by trees, shrubs, herbs, and mosses.",
+    "music": "Vocal or instrumental sounds combined in such a way as to produce beauty of form.",
+    "glove": "A covering for the hand worn for protection against cold or dirt.",
+    "flame": "A hot glowing body of ignited gas that is generated by something on fire.",
+    "tower": "A tall, narrow building, either standalone or forming part of a larger structure.",
+    "train": "A series of connected railway carriages or wagons moved by a locomotive.",
+    "pecan": "A smooth brown nut with an edible kernel, similar to a walnut.",
+    "leaky": "Having holes or cracks that allow fluid or gas to enter or escape.",
+    "peaky": "Having a peak, or appearing pale, sick, and gaunt."
+};
+const dictionaryWords = [...targetPool];
 let currentMode = "normal";
 let targetWord = "";
 let currentGuess = "";
@@ -17,30 +102,10 @@ let cachedGuess = "";
 document.addEventListener("DOMContentLoaded", () => {
     buildGrid();
     buildKeyboard();
-    loadOfficialWordLists();
+    setupGameMode();
+    setupEventListeners();
 });
-function loadOfficialWordLists() {
-    Promise.all([
-        fetch(OFFICIAL_ANSWERS_URL).then(res => res.text()),
-        fetch(OFFICIAL_GUESSES_URL).then(res => res.text())
-    ])
-    .then(([answersText, guessesText]) => {
-targetPool = answersText.split(/\r?\n/).map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
-const allowedGuesses = guessesText.split(/\r?\n/).map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
-        dictionaryWords = [...targetPool, ...allowedGuesses];
-        setupGameMode();
-        setupEventListeners();
-    })
-    .catch(err => {
-        console.error("Failed to stream official lists:", err);
-        targetPool = ["crane", "apple", "beach", "dance", "eagle", "pecan", "leaky", "peaky"];
-        dictionaryWords = [...targetPool, "about", "above", "bread", "brick"];
-        setupGameMode();
-        setupEventListeners();
-    });
-}
 function setupGameMode() {
-    if (targetPool.length === 0) return;
     currentMode = document.getElementById("modeSelector").value;
     clearInterval(timerInterval);
     timerRunning = false;
@@ -126,7 +191,7 @@ function handleInput(key) {
     } else if (key === "enter") {
         if (currentGuess.length === 5) commitAttempt();
         else showToast("Short of 5 letters");
-    } else if (/^[a-z]$/i.test(key) && currentGuess.length < 5) {
+    } else if (/^[a-z]\$/i.test(key) && currentGuess.length < 5) {
         currentGuess += key.toLowerCase();
         repaintInputTiles();
     }
@@ -167,8 +232,8 @@ function commitAttempt() {
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 bonusForfeited = true;
-                document.getElementById("timerDisplay").innerText = "Timer Expired! Payout drops to base rate.";
-                showToast("Time run out! Double score multiplier forfeited.");
+                document.getElementById("timerDisplay").innerText = "Timer Expired! Base rate applied.";
+                showToast("Time run out! Score multiplier lost.");
             }
         }, 1000);
     }
@@ -229,7 +294,7 @@ function concludeGame(won) {
     if (!won) base = 0;
     if (won) {
         setTimeout(() => {
-            let name = prompt(`Victory! You scored ${base} points. Enter your username for the Leaderboard:`) || "Anonymous";
+            let name = prompt(`Victory! You scored ${base} points. Enter username:`) || "Anonymous";
             let board = JSON.parse(localStorage.getItem("w_leaderboard")) || [];
             board.push({name, score: base, date: dateStr});
             board.sort((a,b) => b.score - a.score);
@@ -262,14 +327,11 @@ function renderLeaderboard() {
     const defText = document.getElementById("wordDefinition");
     document.getElementById("dictionarySection").classList.remove("hidden");
     defReveal.innerHTML = `Word of the Day: <strong>${targetWord.toUpperCase()}</strong>`;
-    defText.innerText = "Looking up matching definition strings...";
-    fetch(`https://dictionaryapi.dev{targetWord}`)
-        .then(res => res.json())
-        .then(data => {
-            const definition = data.meanings[0].definitions[0].definition;
-            defText.innerText = definition;
-        })
-        .catch(() => { defText.innerText = "Definition lookup completed offline."; });
+    if (offlineDefinitions[targetWord]) {
+        defText.innerText = offlineDefinitions[targetWord];
+    } else {
+        defText.innerText = "Definition tracking complete. System vocabulary entry matched.";
+    }
 }
 function showToast(m) {
     const container = document.getElementById("toastContainer");
