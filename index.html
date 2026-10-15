@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Standalone Daily Wordle Cluster</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>WORDLE <span>3-IN-1</span></h1>
+        <div class="menu-buttons">
+            <select id="modeSelector">
+                <option value="normal">Normal Mode (10 pts)</option>
+                <option value="hard">Hard Mode (25 pts)</option>
+                <option value="extreme">Extreme Mode (100 pts)</option>
+            </select>
+            <button id="settingsBtn" class="icon-btn">⚙️ Settings</button>
+            <button id="leaderboardBtn" class="icon-btn">🏆 Leaderboard</button>
+        </div>
+    </header>
+
+    <div id="gameStatusContainer">
+        <div id="timerDisplay" class="hidden">Time Remaining: 05:00</div>
+        <div id="completionBadge" class="badge hidden">Completed for Today!</div>
+    </div>
+
+    <main>
+        <div id="gameGrid" class="grid-container"></div>
+        <div id="keyboard" class="keyboard-container"></div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="closeSettings">&times;</span>
+            <h2>Game Customization</h2>
+            <div class="setting-row">
+                <div>
+                    <h3>Enable Speed Timer Challenge</h3>
+                    <p>Starts on 1st guess. Beat the 300s clock to <strong>DOUBLE</strong> your score! Timer exhaustion drops you to base points.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="timerToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="closeLeaderboard">&times;</span>
+            <h2>Top 10 Global Scores</h2>
+            <ol id="leaderboardList"></ol>
+            
+            <div id="dictionarySection" class="dictionary-card hidden">
+                <h3>Dictionary Definition</h3>
+                <p id="wordReveal">Word: <strong>-</strong></p>
+                <p id="wordDefinition">Fetching definition entries...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
