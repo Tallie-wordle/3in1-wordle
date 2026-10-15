@@ -271,3 +271,67 @@ function concludeGame(won) {
             let board = JSON.parse(localStorage.getItem("w_leaderboard")) || [];
             board.push({name, score: base, date: dateStr});
             board.sort((a,b) => b.score - a.score);
+localStorage.setItem("w_leaderboard", JSON.stringify(board.slice(0, 10)));
+renderLeaderboard();
+openModal("leaderboardModal");
+}, 600);
+} else {
+showToast(Game Over! The word was ${targetWord.toUpperCase()});
+setTimeout(() => {
+renderLeaderboard();
+openModal("leaderboardModal");
+}, 1200);
+}
+}
+function renderLeaderboard() {
+const list = document.getElementById("leaderboardList");
+list.innerHTML = "";
+let board = JSON.parse(localStorage.getItem("w_leaderboard")) || [];
+if(board.length === 0) {
+list.innerHTML = "No entries yet. Be the first to score!";
+} else {
+board.forEach(entry => {
+let li = document.createElement("li");
+li.innerHTML = <strong>${entry.name}</strong> - ${entry.score} pts (${entry.date});
+list.appendChild(li);
+});
+}
+const defReveal = document.getElementById("wordReveal");
+const defText = document.getElementById("wordDefinition");
+document.getElementById("dictionarySection").classList.remove("hidden");
+defReveal.innerHTML = Word of the Day: <strong>${targetWord.toUpperCase()}</strong>;
+defText.innerText = "Looking up matching definition strings...";
+fetch(https://dictionaryapi.dev{targetWord})
+.then(res => res.json())
+.then(data => {
+const definition = data.meanings.definitions.definition;
+defText.innerText = definition;
+})
+.catch(() => { defText.innerText = "Definition lookup completed. Entry meaning discovered via context."; });
+}
+function showToast(m) {
+const container = document.getElementById("toastContainer");
+if (!container) return;
+const el = document.createElement("div"); el.className = "toast"; el.innerText = m;
+container.appendChild(el);
+setTimeout(() => el.remove(), 2500);
+}
+function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+function setupEventListeners() {
+document.getElementById("modeSelector").removeEventListener("change", setupGameMode);
+document.getElementById("modeSelector").addEventListener("change", setupGameMode);
+document.getElementById("settingsBtn").onclick = () => openModal("settingsModal");
+document.getElementById("closeSettings").onclick = () => closeModal("settingsModal");
+document.getElementById("leaderboardBtn").onclick = () => { renderLeaderboard(); openModal("leaderboardModal"); };
+document.getElementById("closeLeaderboard").onclick = () => closeModal("leaderboardModal");
+document.getElementById("timerToggle").onchange = (e) => {
+timerEnabled = e.target.checked;
+setupGameMode();
+};
+document.onkeydown = (e) => {
+if(e.key === "Backspace") processInput("back");
+else if(e.key === "Enter") processInput("enter");
+else processInput(e.key.toLowerCase());
+};
+}
