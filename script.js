@@ -126,7 +126,7 @@ function handleInput(key) {
     } else if (key === "enter") {
         if (currentGuess.length === 5) commitAttempt();
         else showToast("Short of 5 letters");
-    } else if (/^[a-z]\$/i.test(key) && currentGuess.length < 5) {
+    } else if (/^[a-z]$/i.test(key) && currentGuess.length < 5) {
         currentGuess += key.toLowerCase();
         repaintInputTiles();
     }
