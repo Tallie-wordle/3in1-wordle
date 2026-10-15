@@ -22,33 +22,29 @@ let cachedFeedback = [];
 let cachedGuess = "";
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Generate structural layouts IMMEDIATELY on screen layout paint
+    buildGrid();
+    buildKeyboard();
     loadOfficialWordLists();
 });
 
 // Automatically fetch the entire official 13,000+ Wordle database on startup
 function loadOfficialWordLists() {
-    showToast("Loading official word lists...");
-    
     Promise.all([
         fetch(OFFICIAL_ANSWERS_URL).then(res => res.text()),
         fetch(OFFICIAL_GUESSES_URL).then(res => res.text())
     ])
     .then(([answersText, guessesText]) => {
-        // Clean text files into readable Javascript arrays
         targetPool = answersText.split("\n").map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
         const allowedGuesses = guessesText.split("\n").map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
-        
-        // Dictionary includes both target words and obscure allowed guesses
         dictionaryWords = [...targetPool, ...allowedGuesses];
         
-        // Initialize the game layout now that database is secure
+        // Lock in calculation hooks now that the network load is complete
         setupGameMode();
         setupEventListeners();
     })
     .catch(err => {
         console.error("Failed to stream official lists:", err);
-        showToast("Error connecting to Wordle servers. Using local fallback.");
-        // Fallback safety baseline list in case GitHub is down
         targetPool = ["crane", "apple", "beach", "dance", "eagle", "pecan", "leaky", "peaky"];
         dictionaryWords = [...targetPool, "about", "above", "bread", "brick"];
         setupGameMode();
@@ -82,15 +78,21 @@ function setupGameMode() {
         gameOver = true;
     }
 
-    // Set Distinct Daily Offset Target words so modes don't collide
     const today = new Date();
     const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
     let modeOffset = currentMode === "normal" ? 0 : currentMode === "hard" ? 33 : 88;
     let targetIndex = (dateSeed + modeOffset) % targetPool.length;
     targetWord = targetPool[targetIndex];
 
-    buildGrid();
-    buildKeyboard();
+    // Clear old row text data styles seamlessly
+    const rows = document.querySelectorAll(".grid-row");
+    rows.forEach(row => {
+        const tiles = row.querySelectorAll(".tile");
+        tiles.forEach(tile => {
+            tile.innerText = "";
+            tile.className = "tile";
+        });
+    });
 }
 
 function buildGrid() {
@@ -268,3 +270,4 @@ function concludeGame(won) {
             let name = prompt(`Victory! You scored ${base} points. Enter your username for the Leaderboard:`) || "Anonymous";
             let board = JSON.parse(localStorage.getItem("w_leaderboard")) || [];
             board.push({name, score: base, date: dateStr});
+            board.sort((a,b) => b.score - a.score);
