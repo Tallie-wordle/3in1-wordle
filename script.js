@@ -25,8 +25,8 @@ function loadOfficialWordLists() {
         fetch(OFFICIAL_GUESSES_URL).then(res => res.text())
     ])
     .then(([answersText, guessesText]) => {
-        targetPool = answersText.split("\n").map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
-        const allowedGuesses = guessesText.split("\n").map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
+targetPool = answersText.split(/\r?\n/).map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
+const allowedGuesses = guessesText.split(/\r?\n/).map(w => w.trim().toLowerCase()).filter(w => w.length === 5);
         dictionaryWords = [...targetPool, ...allowedGuesses];
         setupGameMode();
         setupEventListeners();
